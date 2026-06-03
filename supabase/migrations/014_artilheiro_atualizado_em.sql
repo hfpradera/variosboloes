@@ -1,0 +1,2 @@
+ALTER TABLE apostas_artilheiro
+  ADD COLUMN IF NOT EXISTS atualizado_em TIMESTAMPTZ NOT NULL DEFAULT NOW();

@@ -1,0 +1,102 @@
+@import "tailwindcss";
+
+:root {
+  /* Copa do Mundo — Tema claro */
+  --background: #f0f4f0;
+  --foreground: #0d1f0d;
+  --card: #ffffff;
+  --card-foreground: #0d1f0d;
+  --primary: #1a5c2a;
+  --primary-foreground: #ffffff;
+  --secondary: #c9a227;
+  --secondary-foreground: #0d1f0d;
+  --muted: #e2e8e2;
+  --muted-foreground: #4a5e4a;
+  --border: #c8d8c8;
+  --radius: 0.75rem;
+}
+
+.dark {
+  --background: #0a110a;
+  --foreground: #e8f0e8;
+  --card: #111a11;
+  --card-foreground: #e8f0e8;
+  --primary: #2d8a40;
+  --primary-foreground: #ffffff;
+  --secondary: #c9a227;
+  --secondary-foreground: #0d1f0d;
+  --muted: #1a261a;
+  --muted-foreground: #8aaa8a;
+  --border: #1e2e1e;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+* {
+  border-color: var(--border);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Gradientes Copa */
+.gradient-copa {
+  background: linear-gradient(135deg, #1a5c2a 0%, #0d1f0d 50%, #c9a227 100%);
+}
+
+.gradient-hero {
+  background: linear-gradient(180deg, #0d1f0d 0%, #1a5c2a 100%);
+}
+
+/* Card estilo Copa */
+.card-copa {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.2s;
+}
+
+.card-copa:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+/* Badge dourado */
+.badge-ouro {
+  background: linear-gradient(135deg, #c9a227, #f0d060);
+  color: #0d1f0d;
+  font-weight: 700;
+}
+
+/* Animação entrada suave */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Scrollbar customizada */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--muted); }
+::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 3px; }
