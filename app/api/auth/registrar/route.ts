@@ -1,3 +1,4 @@
+import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
@@ -14,33 +15,39 @@ export async function POST(request: Request) {
   if (!parsed.success) return NextResponse.json({ error: 'Dados inválidos' }, { status: 400 })
 
   const { nome, email, senha } = parsed.data
-  const admin = createAdminClient()
+  const supabase = await createClient()
 
-  const { data, error } = await admin.auth.admin.createUser({
+  const { data, error } = await supabase.auth.signUp({
     email,
     password: senha,
-    email_confirm: true,
-    user_metadata: { nome },
+    options: { data: { nome } },
   })
 
   if (error) {
-    if (error.message.includes('already been registered') || error.message.includes('already registered')) {
+    if (error.message.includes('already') || error.message.includes('registered')) {
       return NextResponse.json({ error: 'Este e-mail já está cadastrado.' }, { status: 409 })
     }
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
-  const userId = data.user.id
+  if (!data.user) {
+    return NextResponse.json({ error: 'Erro ao criar conta.' }, { status: 500 })
+  }
 
-  // Auto-aprovar se email estiver na lista de pré-aprovados
-  const { data: preAprovado } = await admin
-    .from('emails_pre_aprovados')
-    .select('email')
-    .eq('email', email.toLowerCase())
-    .maybeSingle()
+  // Tentar auto-aprovar via admin client (se disponível)
+  try {
+    const admin = createAdminClient()
+    const { data: preAprovado } = await admin
+      .from('emails_pre_aprovados')
+      .select('email')
+      .eq('email', email.toLowerCase())
+      .maybeSingle()
 
-  if (preAprovado) {
-    await admin.from('perfis').update({ aprovado: true }).eq('id', userId)
+    if (preAprovado) {
+      await admin.from('perfis').update({ aprovado: true }).eq('id', data.user.id)
+    }
+  } catch {
+    // Admin client indisponível — ignora, usuário aguarda aprovação manual
   }
 
   return NextResponse.json({ ok: true })
